@@ -1,0 +1,79 @@
+************************************************
+FIRST HEAD LINE
+************************************************
+
+pts2	{dim}	{type}	{domain}
+
+	dim : number of dimension
+	type : weight type
+		d : double
+		c : complex
+		i : integer
+		i : unsigned integer
+		n : no value
+	domain : domain type
+		unit
+		unit-tor
+		rect
+		rect-tor
+		base
+		base-tor
+
+************************************************
+SECOND HEAD LINE
+************************************************
+
+domain description, only for :
+	rect
+	rect-tor
+	base
+	base-tor
+
+rect and rect-tor :
+{dim1_Min}	{dim1_Max}	...	{dimN_Min}	{dimN_Max}
+	dim1_Min : Minimum position for the 1st dimension
+	dim1_Max : Minimum position for the 1st dimension
+	...
+	dimN_Min : Minimum position for the Nth dimension
+	dimN_Max : Minimum position for the Nth dimension
+
+base and base-tor :
+{Ref_dim1} ... {Ref_dimN} {Base1_dim1} ... {Base1_dimN} ... {BaseN_dim1} ... {BaseN_dimN}
+	Ref_dim1 : Position of the base for the 1st dimension
+	...
+	Ref_dimN : Position of the base for the Nth dimension
+	
+	...
+	
+	BaseX_dimY : Value of the Yth dimension of the Xth vector of the base
+
+************************************************
+VALUES
+************************************************
+
+One line of this format per point
+{dim1}	...	{dimN}	{value}
+
+	dim1 : position in dimension 1
+	...
+	dimN : position in dimension N
+	value : weight value. The format depend
+		of the data type specified in
+		the header
+
+
+************************************************
+Example
+************************************************
+
+#Two points in [0;1]x[0;1] with double weight
+pts2	2	d	unit-tor
+0.1	0.2	3.14
+0.5	0.8	42.0
+
+#Three points in [0;256] with complex weight
+pts1	1	c	rect
+0	256
+0	0.3333	0.6666
+127	-0.125	0.256
+255	-0.2	-0.2

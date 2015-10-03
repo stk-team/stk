@@ -1,0 +1,27 @@
+=== Nom des variables ===
+
+m_name		Variables membre d'une classe
+i_name		Parametre de fonction en entrée
+o_name		Parametre de fonction en sortie
+ _name		Parametre de fonction en entrée/sortie
+  name		Autre variable
+
+functionName
+ClassName
+file-name
+
+__UnstableClassName
+__unstableFunctionName
+
+stk_cuFunctionName
+cu-filename.cu
+cu-filename.hpp
+
+/**
+ * @class ClassName
+ * Une description longue
+ * @brief Une description courte
+ * @param Description du paramètre
+ * @return fffffffffff
+ * @see fdfdssdff fsdfsdsdfs
+ */

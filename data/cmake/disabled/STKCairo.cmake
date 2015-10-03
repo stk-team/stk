@@ -1,0 +1,1 @@
+set(STK_CAIRO_ENABLED 0)
