@@ -1,4 +1,4 @@
-# stk [S]ampling [T]ool[K]it 
+# stk --- [S]ampling [T]ool[K]it 
 
 © 2015
 

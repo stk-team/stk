@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0015 OLD)
-list(APPEND CMAKE_MODULE_PATH "modules")
-
+########################################################################
+project(stk)
 ########################################################################
 
-set(CAIRO_ENABLED 1)
-set(CMAKE_SHARED_LIBRARY_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CXX_FLAGS} -framework Accelerate" )
 
-project(stk)
+cmake_minimum_required(VERSION 2.8)
+cmake_policy(SET CMP0015 OLD)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/modules")
 
+
+set(CAIRO_ENABLED 0)
 set(LIBRARY_OUTPUT_PATH ./lib)
 set(EXECUTABLE_OUTPUT_PATH .)
 set(CMAKE_SHARED_MODULE_PREFIX)
@@ -24,6 +24,7 @@ find_package(PNG REQUIRED)
 find_package(Boost 1.42.0 COMPONENTS thread program_options unit_test_framework timer REQUIRED)
 find_package(FFTW REQUIRED)
 find_package(CGAL REQUIRED COMPONENTS Core)
+find_package(GMP REQUIRED)
 
 if(CAIRO_ENABLED)
 	find_package(Cairo REQUIRED)
@@ -31,22 +32,25 @@ if(CAIRO_ENABLED)
 endif(CAIRO_ENABLED)
 
 add_definitions(-DDIR_MODULE="${STK_MODULE_PATH}/")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -frounding-math)
+
+## disabling for now.. not supported on clang
+#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -frounding-math)
 
 
 include_directories(
-	./src
+	${PROJECT_SOURCE_DIR}/src
 	${PNG_INCLUDE_DIR}
 	${Boost_INCLUDE_DIR}
 	${FFTW_INCLUDE_DIR}
+	${GMP_INCLUDE_DIR}
 	${CGAL_INCLUDE_DIRS}
 	${CGAL_3RD_PARTY_INCLUDE_DIRS}
-    /opt/local/include/cairo/
-    /usr/include/suitesparse
+        /opt/local/include/cairo/
+        /usr/include/suitesparse
 )
 
 link_directories(
-	./lib
+	${PROJECT_SOURCE_DIR}/lib
 	${PNG_LIBRARY}
 	${Boost_LIBRARY_DIRS}
 	${FFTW_INCLUDE_DIR}
@@ -95,6 +99,8 @@ target_link_libraries(
 	${PNG_LIBRARIES}
 	${FFTW_LIBRARIES}
 	${CAIRO_LIBRARIES}
+        ${GMPXX_LIBRARIES}
+        ${GMP_LIBRARIES}
 )
 target_link_libraries(
 	stk_static
@@ -103,6 +109,8 @@ target_link_libraries(
 	${PNG_LIBRARIES}
 	${FFTW_LIBRARIES}
 	${CAIRO_LIBRARIES}
+        ${GMPXX_LIBRARIES}
+        ${GMP_LIBRARIES}
 )
 
 set_target_properties(stk PROPERTIES VERSION 0.1)
@@ -208,6 +216,7 @@ target_link_libraries(
 	stk
 	${Boost_LIBRARIES}
 	${prog_libs}
+        ${GMPXX_LIBRARIES} ${GMP_LIBRARIES}
 )
 install(PROGRAMS ${STK_BIN_PATH}/stk-sampler-fpoT2 DESTINATION bin)
 
