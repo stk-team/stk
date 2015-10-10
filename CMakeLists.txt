@@ -20,13 +20,10 @@ file(MAKE_DIRECTORY ${STK_BIN_PATH})
 file(MAKE_DIRECTORY ${STK_TEST_BIN_PATH})
 file(MAKE_DIRECTORY lib/sampler)
 
-set(CMAKE_BUILD_TYPE Release)  # None | Debug  | Release | RelWithDebInfo | MinSizeRel
-
 find_package(PNG REQUIRED)
 find_package(Boost 1.42.0 COMPONENTS thread program_options unit_test_framework timer REQUIRED)
 find_package(FFTW REQUIRED)
 find_package(CGAL REQUIRED COMPONENTS Core)
-#find_package(OpenMP REQUIRED)
 
 if(CAIRO_ENABLED)
 	find_package(Cairo REQUIRED)
