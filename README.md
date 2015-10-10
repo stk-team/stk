@@ -13,27 +13,26 @@
 
 ## Requirements
 
-
-=== General ===
+- General
  - cmake
  - gcc
  - boost
   
   
-=== Voronoi & delaunay computation ===
+- Voronoi & delaunay computation 
  - cgal
  
  
-=== Fast fourier transform and GPU parallelization ===
+- Fast fourier transform and GPU parallelization 
  - fftw
   
   
-=== Graphs file output ===
+- Graphs file output 
  - libpng
  - cairo (optional)
   
   
-=== Documentation ===
+- Documentation 
  - doxygen
  - graphViz
   
