@@ -9,16 +9,32 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/modules")
 
 
 set(CAIRO_ENABLED 0)
-set(LIBRARY_OUTPUT_PATH ./lib)
-set(EXECUTABLE_OUTPUT_PATH .)
 set(CMAKE_SHARED_MODULE_PREFIX)
-set(STK_BIN_PATH ./bin)
-set(STK_TEST_BIN_PATH ./unit-test/bin)
-set(STK_MODULE_PATH /usr/local/share/stk)
 
-file(MAKE_DIRECTORY ${STK_BIN_PATH})
-file(MAKE_DIRECTORY ${STK_TEST_BIN_PATH})
-file(MAKE_DIRECTORY lib/sampler)
+
+message(STATUS "-------------------------------------------------------------------------------")
+message(STATUS "STK Version 0.1")
+message(STATUS "-------------------------------------------------------------------------------" )
+message(STATUS "Source DIR is ${PROJECT_SOURCE_DIR}")
+message(STATUS "Binary/Build DIR is ${PROJECT_BINARY_DIR}")
+message(STATUS "Build type is ${CMAKE_BUILD_TYPE}")
+message(STATUS "Installation prefix directory is " ${CMAKE_INSTALL_PREFIX})
+message(STATUS "Host system is " ${CMAKE_HOST_SYSTEM} " with processor " ${CMAKE_HOST_SYSTEM_PROCESSOR})
+message(STATUS "Target system is " ${CMAKE_SYSTEM} " with processor " ${CMAKE_SYSTEM_PROCESSOR})
+message(STATUS "-------------------------------------------------------------------------------" )
+message(STATUS "------------------------------------DEPS---------------------------------------" )
+
+#------------------------------------------------------------------------------
+# Offer the user the choice of overriding the installation directories
+#------------------------------------------------------------------------------
+set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
+set(INSTALL_DATA_DIR share CACHE PATH "Installation directory for data files")
+
+########################################################################
+## DEPS
+########################################################################
 
 find_package(PNG REQUIRED)
 find_package(Boost 1.42.0 COMPONENTS thread program_options unit_test_framework timer REQUIRED)
@@ -27,8 +43,8 @@ find_package(CGAL REQUIRED COMPONENTS Core)
 find_package(GMP REQUIRED)
 
 if(CAIRO_ENABLED)
-	find_package(Cairo REQUIRED)
-	add_definitions(-DCAIRO_ENABLED)
+  find_package(Cairo REQUIRED)
+  add_definitions(-DCAIRO_ENABLED)
 endif(CAIRO_ENABLED)
 
 add_definitions(-DDIR_MODULE="${STK_MODULE_PATH}/")
@@ -36,44 +52,54 @@ add_definitions(-DDIR_MODULE="${STK_MODULE_PATH}/")
 ## disabling for now.. not supported on clang
 #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -frounding-math)
 
-
 include_directories(
-	${PROJECT_SOURCE_DIR}/src
-	${PNG_INCLUDE_DIR}
-	${Boost_INCLUDE_DIR}
-	${FFTW_INCLUDE_DIR}
-	${GMP_INCLUDE_DIR}
-	${CGAL_INCLUDE_DIRS}
-	${CGAL_3RD_PARTY_INCLUDE_DIRS}
-        /opt/local/include/cairo/
-        /usr/include/suitesparse
-)
+  ${PROJECT_SOURCE_DIR}/src
+  ${PNG_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIR}
+  ${FFTW_INCLUDE_DIR}
+  ${GMP_INCLUDE_DIR}
+  ${CGAL_INCLUDE_DIRS}
+  ${CGAL_3RD_PARTY_INCLUDE_DIRS}
+  /opt/local/include/cairo/
+  /usr/include/suitesparse
+  )
 
 link_directories(
-	${PROJECT_SOURCE_DIR}/lib
-	${PNG_LIBRARY}
-	${Boost_LIBRARY_DIRS}
-	${FFTW_INCLUDE_DIR}
-	${CGAL_LIBRARIES_DIR}
-	${CGAL_3RD_PARTY_LIBRARIES_DIRS}
-	${CAIRO_LIBRARY_DIRS}
-)
+  ${PROJECT_SOURCE_DIR}/lib
+  ${Boost_LIBRARY_DIRS}
+  ${FFTW_INCLUDE_DIR}
+  ${CGAL_LIBRARIES_DIR}
+  ${CGAL_3RD_PARTY_LIBRARIES_DIRS}
+  ${CAIRO_LIBRARY_DIRS}
+  )
+
+set(STK_DEPS_LIBRARIES
+  ${CGAL_LIBRARIES}
+  ${CGAL_3RD_PARTY_LIBRARIES}
+  ${PNG_LIBRARIES}
+  ${FFTW_LIBRARIES}
+  ${CAIRO_LIBRARIES}
+  ${GMPXX_LIBRARIES}
+  ${GMP_LIBRARIES}
+  ${Boost_LIBRARIES})
+
+message(STATUS "-------------------------------------------------------------------------------" )
 
 ########################################################################
 # SOURCES
 ########################################################################
 
 file(GLOB stk_sources
-	src/stk/*.cpp
-	src/stk/conversion/*.cpp
-	src/stk/diff-space/*.cpp
-	src/stk/fourier/*.cpp
-	src/stk/function/*.cpp
-	src/stk/io/*.cpp
-	src/stk/optimization/*.cpp
-	src/stk/sampler/*.cpp
-	src/stk/unstable/*.cpp
-)
+  src/stk/*.cpp
+  src/stk/conversion/*.cpp
+  src/stk/diff-space/*.cpp
+  src/stk/fourier/*.cpp
+  src/stk/function/*.cpp
+  src/stk/io/*.cpp
+  src/stk/optimization/*.cpp
+  src/stk/sampler/*.cpp
+  src/stk/unstable/*.cpp
+  )
 
 file(GLOB stk_headers src/stk/*.hpp)
 file(GLOB stk_headers_conversion src/stk/conversion/*.hpp)
@@ -93,70 +119,57 @@ add_library(stk SHARED ${stk_sources})
 add_library(stk_static STATIC ${stk_sources})
 
 target_link_libraries(
-	stk
-	${CGAL_LIBRARIES} -lgmp
-	${CGAL_3RD_PARTY_LIBRARIES}
-	${PNG_LIBRARIES}
-	${FFTW_LIBRARIES}
-	${CAIRO_LIBRARIES}
-        ${GMPXX_LIBRARIES}
-        ${GMP_LIBRARIES}
-)
+  stk
+  ${STK_DEPS_LIBRARIES}
+  )
 target_link_libraries(
-	stk_static
-	${CGAL_LIBRARIES} -lgmp
-	${CGAL_3RD_PARTY_LIBRARIES}
-	${PNG_LIBRARIES}
-	${FFTW_LIBRARIES}
-	${CAIRO_LIBRARIES}
-        ${GMPXX_LIBRARIES}
-        ${GMP_LIBRARIES}
-)
+  stk_static
+  ${STK_DEPS_LIBRARIES}
+  )
 
 set_target_properties(stk PROPERTIES VERSION 0.1)
 set_target_properties(stk PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(stk_static PROPERTIES VERSION 0.1)
 set_target_properties(stk_static PROPERTIES LINKER_LANGUAGE CXX)
 
-install(
-	TARGETS stk stk_static
-	DESTINATION lib
-)
+install(TARGETS stk stk_static
+  DESTINATION lib
+  )
 
 install(FILES ${stk_headers}
-	DESTINATION /usr/local/include/stk)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk)
 install(FILES ${stk_headers_conversion}
-	DESTINATION /usr/local/include/stk/conversion)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/conversion)
 install(FILES ${stk_headers_fourier}
-	DESTINATION /usr/local/include/stk/fourier)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/fourier)
 install(FILES ${stk_headers_function}
-	DESTINATION /usr/local/include/stk/function)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/function)
 install(FILES ${stk_headers_io}
-	DESTINATION /usr/local/include/stk/io)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/io)
 install(FILES ${stk_headers_optimization}
-	DESTINATION /usr/local/include/stk/optimization)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/optimization)
 install(FILES ${stk_headers_sampler}
-	DESTINATION /usr/local/include/stk/sampler)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/sampler)
 install(FILES ${stk_headers_unstable}
-	DESTINATION /usr/local/include/stk/unstable)
+  DESTINATION ${INSTALL_INCLUDE_DIR}/stk/unstable)
 
 install(FILES data/cmake/FindSTK.cmake
-	DESTINATION /usr/share/cmake-2.8/Modules)
+  DESTINATION /usr/share/cmake-2.8/Modules)
 
 if(CUDA_ENABLED)
-	install(FILES data/cmake/enabled/STKCuda.cmake
-		DESTINATION /usr/local/share/stk/cmake)
+  install(FILES data/cmake/enabled/STKCuda.cmake
+    DESTINATION /usr/local/share/stk/cmake)
 else(CUDA_ENABLED)
-	install(FILES data/cmake/disabled/STKCuda.cmake
-		DESTINATION /usr/local/share/stk/cmake)
+  install(FILES data/cmake/disabled/STKCuda.cmake
+    DESTINATION /usr/local/share/stk/cmake)
 endif(CUDA_ENABLED)
 
 if(CAIRO_ENABLED)
-	install(FILES data/cmake/enabled/STKCairo.cmake
-		DESTINATION /usr/local/share/stk/cmake)
+  install(FILES data/cmake/enabled/STKCairo.cmake
+    DESTINATION /usr/local/share/stk/cmake)
 else(CAIRO_ENABLED)
-	install(FILES data/cmake/disabled/STKCairo.cmake
-		DESTINATION /usr/local/share/stk/cmake)
+  install(FILES data/cmake/disabled/STKCairo.cmake
+    DESTINATION /usr/local/share/stk/cmake)
 endif(CAIRO_ENABLED)
 
 ########################################################################
@@ -164,14 +177,14 @@ endif(CAIRO_ENABLED)
 ########################################################################
 
 function(stk_make_program prog_name prog_libs)
-	add_executable(${STK_BIN_PATH}/stk-${prog_name} src/${prog_name}.cpp)
-	target_link_libraries(
-		${STK_BIN_PATH}/stk-${prog_name}
-		stk
-		${Boost_LIBRARIES}
-		${prog_libs}
-	)
-	install(PROGRAMS ${STK_BIN_PATH}/stk-${prog_name} DESTINATION bin)
+  add_executable(stk-${prog_name} src/${prog_name}.cpp)
+  target_link_libraries(
+    stk-${prog_name}
+    stk
+    ${STK_DEPS_LIBRARIES}
+    ${prog_libs}
+    )
+  install(PROGRAMS stk-${prog_name} DESTINATION bin)
 endfunction()
 
 stk_make_program(fourier "")
@@ -197,8 +210,8 @@ stk_make_program(pts-info "")
 #~ stk_make_program(pts-take "")
 
 if(CAIRO_ENABLED)
-	stk_make_program(draw-pts "")
-	#~ stk_make_program(draw-histo "")
+  stk_make_program(draw-pts "")
+  #~ stk_make_program(draw-histo "")
 endif(CAIRO_ENABLED)
 
 ########################################################################
@@ -210,33 +223,32 @@ stk_make_program(sampler-stratifiedT2 "")
 stk_make_program(sampler-sobolT2 "")
 stk_make_program(sampler-haltonT2 "")
 
-add_executable(${STK_BIN_PATH}/stk-sampler-fpoT2 src/sampler-fpo/sampler-fpoT2.cpp src/sampler-fpo/DT.cpp)
+add_executable(stk-sampler-fpoT2 src/sampler-fpo/sampler-fpoT2.cpp src/sampler-fpo/DT.cpp)
 target_link_libraries(
-	${STK_BIN_PATH}/stk-sampler-fpoT2
-	stk
-	${Boost_LIBRARIES}
-	${prog_libs}
-        ${GMPXX_LIBRARIES} ${GMP_LIBRARIES}
-)
-install(PROGRAMS ${STK_BIN_PATH}/stk-sampler-fpoT2 DESTINATION bin)
+  stk-sampler-fpoT2
+  stk
+  ${STK_DEPS_LIBRARIES}
+  ${prog_libs}
+  )
+install(PROGRAMS stk-sampler-fpoT2 DESTINATION bin)
 
 #~ add_library(sampler/bnot MODULE
 #~ add_executable(${STK_BIN_PATH}/bnot
-	#~ src/sampler/bnot/bnot.cpp
-	#~ src/sampler/bnot/matrix/sparse_array.cpp
-	#~ src/sampler/bnot/matrix/sparse_matrix.cpp
-	#~ src/sampler/bnot/energy.cpp
-	#~ src/sampler/bnot/init.cpp
-	#~ src/sampler/bnot/optimizer.cpp
-	#~ src/sampler/bnot/regularity.cpp
-	#~ src/sampler/bnot/sites.cpp)
-	
+#~ src/sampler/bnot/bnot.cpp
+#~ src/sampler/bnot/matrix/sparse_array.cpp
+#~ src/sampler/bnot/matrix/sparse_matrix.cpp
+#~ src/sampler/bnot/energy.cpp
+#~ src/sampler/bnot/init.cpp
+#~ src/sampler/bnot/optimizer.cpp
+#~ src/sampler/bnot/regularity.cpp
+#~ src/sampler/bnot/sites.cpp)
+
 #~ target_link_libraries(
-	#~ sampler/bnot
-	#~ ${CGAL_LIBRARIES} -lgmp
-	#~ -lCGAL -lCGAL_Core 
-	#~ stk
-	#~ -lm -lamd -lcamd -lcolamd -lccolamd -lcholmod -lspqr -ltbb -lmetis -lblas -llapack
+#~ sampler/bnot
+#~ ${CGAL_LIBRARIES} -lgmp
+#~ -lCGAL -lCGAL_Core 
+#~ stk
+#~ -lm -lamd -lcamd -lcolamd -lccolamd -lcholmod -lspqr -ltbb -lmetis -lblas -llapack
 #~ )
 #~ install(TARGETS sampler/bnot DESTINATION ${STK_MODULE_PATH}/samplers)
 
@@ -248,14 +260,15 @@ install(PROGRAMS ${STK_BIN_PATH}/stk-sampler-fpoT2 DESTINATION bin)
 enable_testing()
 
 function(stk_make_test test_name)
-	add_executable(${STK_TEST_BIN_PATH}/test-${test_name} unit-test/src/${test_name}.cpp)
-	target_link_libraries(
-		${STK_TEST_BIN_PATH}/test-${test_name}
-		stk
-		${Boost_LIBRARIES}
-		${Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG}
-	)
-	add_test(test-${test_name} ${STK_TEST_BIN_PATH}/test-${test_name})
+  add_executable(${STK_TEST_BIN_PATH}/test-${test_name} unit-test/src/${test_name}.cpp)
+  target_link_libraries(
+    ${STK_TEST_BIN_PATH}/test-${test_name}
+    stk
+    ${STK_DEPS_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG}
+    )
+  add_test(test-${test_name} ${STK_TEST_BIN_PATH}/test-${test_name})
 endfunction()
 
 #~ stk_make_test(vector)

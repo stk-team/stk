@@ -319,17 +319,17 @@ std::vector<VAL> Array<DIM, VAL>::getMin(unsigned int nbVal) const
 
 	for(unsigned int i=0; i<this->getArraySize(); i++)
 	{
-		for(unsigned int j=nbVal-1; j>=0; j--)
+		for( int j=nbVal-1; j>=0; j--)
 		{
 			if(this->atIndice(i) >= min.at(j))
 			{
-				for(unsigned int k=nbVal-1; k>j+1; k--) min.at(k) = min.at(k-1);
+				for( int k=nbVal-1; k>j+1; k--) min.at(k) = min.at(k-1);
 				if(j+1<nbVal) min.at(j+1) = this->atIndice(i);
 				break;
 			}
 			else if(j==0)
 			{
-				for(unsigned int k=nbVal-1; k>j; k--) min.at(k) = min.at(k-1);
+				for( int k=nbVal-1; k>j; k--) min.at(k) = min.at(k-1);
 				min.at(0) = this->atIndice(i);
 				break;
 			}
@@ -360,7 +360,7 @@ std::vector<VAL> Array<DIM, VAL>::getMax(unsigned int nbVal) const
 
 	for(unsigned int i=0; i<this->getArraySize(); i++)
 	{
-		for(unsigned int j=nbVal-1; j>=0; j--)
+		for( int j=nbVal-1; j>=0; j--)
 		{
 			if(this->atIndice(i) <= max.at(j))
 			{
