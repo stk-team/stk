@@ -16,22 +16,14 @@
 - General
  - cmake
  - gcc
- - boost
-  
-  
+ - boost  
 - Voronoi & delaunay computation 
- - cgal
- 
- 
+ - cgal 
 - Fast fourier transform and GPU parallelization 
- - fftw
-  
-  
+ - fftw  
 - Graphs file output 
  - libpng
- - cairo (optional)
-  
-  
+ - cairo (optional)  
 - Documentation 
  - doxygen
  - graphViz
@@ -41,21 +33,22 @@
 ## Intallation
 
 
-=== Linux & Mac ===
+### Linux & Mac 
  
-$> cmake .
-$> make
-$> sudo make install
+    cmake .
+    make
+    sudo make install
 
 Optional :
-$> make doc
+
+    make doc
 
 
 ## Dev Infos
 
-=== Contributors ===
+### Contributors 
 
-Chronologically :
+Chronologically:
  - Wachtel Florent
  - Pilleboue Adrien
  - Cathelin Gael
