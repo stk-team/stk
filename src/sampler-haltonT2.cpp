@@ -29,7 +29,7 @@ double generateCoordinate(int n)
 
 void haltonSampler(stk::PointSet2dd& pts, int nPts)
 {
-	for(int i=0; i<g_nPts; i++)
+	for(int i=0; i<nPts; i++)
 	{
 		pts.push_back(stk::Point2dd(stk::Vector2d(generateCoordinate<2>(i), generateCoordinate<3>(i)), 1.0));
 	}
