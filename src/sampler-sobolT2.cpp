@@ -184,7 +184,10 @@ int main(int argc, char** argv)
 		stk::io::PointSetOutputStream<2, double, double> stream;
 		stream.setValueType(stk::io::PointSetStream::VAL_NONE);
 		stream.setPositionType(stk::io::PointSetStream::POS_DOUBLE);
-		stream.setBinary(true);
+		if(vm.count("binary"))
+		{
+			stream.setBinary(true);
+		}
 		stream.open(fn_output);
 		
 		double meanTime = 0;
