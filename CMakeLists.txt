@@ -75,6 +75,7 @@ link_directories(
 
 set(STK_DEPS_LIBRARIES
   ${CGAL_LIBRARIES}
+  ${CGAL_CORE_LIBRARY}
   ${CGAL_3RD_PARTY_LIBRARIES}
   ${PNG_LIBRARIES}
   ${FFTW_LIBRARIES}
@@ -82,6 +83,8 @@ set(STK_DEPS_LIBRARIES
   ${GMPXX_LIBRARIES}
   ${GMP_LIBRARIES}
   ${Boost_LIBRARIES})
+
+include(${CGAL_USE_FILE})
 
 message(STATUS "-------------------------------------------------------------------------------" )
 
@@ -190,6 +193,7 @@ endfunction()
 stk_make_program(fourier "")
 stk_make_program(integration-test "")
 stk_make_program(pts-info "")
+stk_make_program(discrepancy "")
 #~ stk_make_program(checkerboard "")
 #~ stk_make_program(zoneplate "")
 #~ stk_make_program(zoneplate2 "")
@@ -199,7 +203,7 @@ stk_make_program(pts-info "")
 #~ stk_make_program(bpts "")
 #~ stk_make_program(ddf "")
 #~ stk_make_program(integration -ldl)
-#~ stk_make_program(discrepancy "")
+
 #~ stk_make_program(discrepancy3d "")
 #~ stk_make_program(voronoi "")
 #~ stk_make_program(capacity "")
