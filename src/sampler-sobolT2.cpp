@@ -10,7 +10,7 @@
 
 namespace boostPO = boost::program_options;
 
-void sobolSampler(stk::PointSet2dd& pts, int nPts)
+void sobolSampler(stk::PointSet2dd& pts, int nPts, bool shift)
 {
 	const int D = 2;
 	
@@ -112,9 +112,24 @@ void sobolSampler(stk::PointSet2dd& pts, int nPts)
 	
 	delete [] C;
 	
+	double x = 0;
+	double y = 0;
+	if (shift)
+	{
+		 x = drand48();
+		 y = drand48();
+	}
+	
 	for(int i=0; i<nPts; i++)
 	{
-		pts.push_back(stk::Point2dd(stk::Vector2d(POINTS[i*D+0], POINTS[i*D+1]), 1.0));
+		double px = POINTS[i*D+0]+x;
+		if (px > 1)
+			px -= 1;
+		double py = POINTS[i*D+1]+y;
+		if (py > 1)
+			py -= 1;
+		
+		pts.push_back(stk::Point2dd(stk::Vector2d(px, py), 1.0));
 	}
 	
 	delete [] POINTS;
@@ -127,6 +142,8 @@ int main(int argc, char** argv)
 	std::string method;
 	int nPts;
 	int nPatches;
+	
+	srand(time(NULL));
 	
 	boostPO::variables_map vm;
 	boostPO::options_description desc("Allowed options");
@@ -144,6 +161,8 @@ int main(int argc, char** argv)
 			"number of point sets")
 		("binary,b",
 			"write in binary mode")
+		("shift,s",
+			"random shifts the pointsets")
 		;
 		
 	boostPO::positional_options_description p;
@@ -203,7 +222,7 @@ int main(int argc, char** argv)
 			boost::timer::cpu_timer timer;
 	
 			//Sampling function
-			sobolSampler(pts, nPts);
+			sobolSampler(pts, nPts, vm.count("shift"));
 	
 			boost::timer::nanosecond_type timeSystem = timer.elapsed().system;
 			boost::timer::nanosecond_type timeUser = timer.elapsed().user;

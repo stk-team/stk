@@ -27,11 +27,25 @@ double generateCoordinate(int n)
 	return res;
 }
 
-void haltonSampler(stk::PointSet2dd& pts, int nPts)
+void haltonSampler(stk::PointSet2dd& pts, int nPts, bool shift)
 {
+	double x = 0;
+	double y = 0;
+	if (shift)
+	{
+		 x = drand48();
+		 y = drand48();
+	}
 	for(int i=0; i<nPts; i++)
 	{
-		pts.push_back(stk::Point2dd(stk::Vector2d(generateCoordinate<2>(i), generateCoordinate<3>(i)), 1.0));
+		double px = generateCoordinate<2>(i)+x;
+		if (px > 1)
+			px -= 1;
+		double py = generateCoordinate<3>(i)+y;
+		if (py > 1)
+			py -= 1;
+		
+		pts.push_back(stk::Point2dd(stk::Vector2d(px, py), 1.0));
 	}
 }
 
@@ -60,6 +74,8 @@ int main(int argc, char** argv)
 			"number of point sets")
 		("binary,b",
 			"write in binary mode")
+		("shift,s",
+			"random shifts the pointsets")
 		;
 		
 	boostPO::positional_options_description p;
@@ -119,7 +135,7 @@ int main(int argc, char** argv)
 			boost::timer::cpu_timer timer;
 	
 			//Sampling function
-			haltonSampler(pts, nPts);
+			haltonSampler(pts, nPts, vm.count("shift"));
 	
 			boost::timer::nanosecond_type timeSystem = timer.elapsed().system;
 			boost::timer::nanosecond_type timeUser = timer.elapsed().user;
