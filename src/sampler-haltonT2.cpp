@@ -58,6 +58,8 @@ int main(int argc, char** argv)
 	int nPts;
 	int nPatches;
 	
+	srand48(time(NULL));
+	
 	boostPO::variables_map vm;
 	boostPO::options_description desc("Allowed options");
 	desc.add_options()
