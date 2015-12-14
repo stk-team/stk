@@ -81,6 +81,12 @@ void fpoSampler(stk::PointSet2dd& pts, int nPts)
 	vector<Point_2> points;
 	generate_random(points, npoints, rng);
 	
+	if (npoints == 1)
+	{
+		pts.push_back(stk::Point2dd(stk::Vector2d(points[0][0], points[0][1]), 1.0));
+		return;
+	}
+	
 	// Set up initial triangulation
 	DT dt(points, true);
 	
