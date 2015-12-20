@@ -227,6 +227,15 @@ stk_make_program(sampler-stratifiedT2 "")
 stk_make_program(sampler-sobolT2 "")
 stk_make_program(sampler-haltonT2 "")
 
+add_executable(stk-sampler-poissondiskT2 src/sampler-poissondisk/sampler-poissondiskT2.cpp)
+target_link_libraries(
+  stk-sampler-poissondiskT2
+  stk
+  ${STK_DEPS_LIBRARIES}
+  ${prog_libs}
+  )
+install(PROGRAMS stk-sampler-poissondiskT2 DESTINATION bin)
+
 add_executable(stk-sampler-fpoT2 src/sampler-fpo/sampler-fpoT2.cpp src/sampler-fpo/DT.cpp)
 target_link_libraries(
   stk-sampler-fpoT2
@@ -234,7 +243,7 @@ target_link_libraries(
   ${STK_DEPS_LIBRARIES}
   ${prog_libs}
   )
-install(PROGRAMS stk-sampler-fpoT2 DESTINATION bin)
+install(PROGRAMS stk-sampler-poissondiskT2 DESTINATION bin)
 
 #~ add_library(sampler/bnot MODULE
 #~ add_executable(${STK_BIN_PATH}/bnot

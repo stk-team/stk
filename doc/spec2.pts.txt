@@ -2,7 +2,7 @@
 FIRST HEAD LINE
 ************************************************
 
-pts2	{dim}	{type}	{domain}
+mpts2	{dim}	{type}	{domain}
 
 	dim : number of dimension
 	type : weight type
@@ -61,19 +61,40 @@ One line of this format per point
 		of the data type specified in
 		the header
 
+************************************************
+MULTIPLE POINTSET
+************************************************
+
+Use #patch-separator to begin a new pointset.
+You don't need to repeat the head.
+
+************************************************
+BINARY FILES
+************************************************
+
+Replace mpts2 by bpts2, and store points in binary mode.
+Headers and separator must stay in ASCII mode.
 
 ************************************************
 Example
 ************************************************
 
 #Two points in [0;1]x[0;1] with double weight
-pts2	2	d	unit-tor
+mpts2	2	d	unit-tor
 0.1	0.2	3.14
 0.5	0.8	42.0
 
 #Three points in [0;256] with complex weight
-pts1	1	c	rect
+mpts1	1	c	rect
 0	256
 0	0.3333	0.6666
 127	-0.125	0.256
 255	-0.2	-0.2
+
+#Two pointsets of size 2, in [0;1;0;1], without weight and in binary format ([XX] means that XX is written in binary mode)
+bpts1	1	n	unit-tor
+[0.1][0.2]
+[0.2][0.5]
+#patch-separator
+[0.8][0.3]
+[0.7][0.5]
