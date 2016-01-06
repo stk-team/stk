@@ -3,7 +3,6 @@
 © 2015
 
 
-**PLEASE DO NOT USE THE LIBRARY YET**
 
 
 **Wait for the first release**
