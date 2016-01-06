@@ -49,8 +49,10 @@ Optional :
 
 ### Contributors 
 
-Chronologically:
- - Wachtel Florent
- - Pilleboue Adrien
- - Cathelin Gael
-
+- Cathelin Gael
+- Coeurjolly David
+- Pilleboue Adrien
+- Singh Gurpreet
+- Wachtel Florent
+ 
+ 
