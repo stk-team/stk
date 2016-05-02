@@ -5,9 +5,13 @@
 #include <sstream>
 #include <iomanip>
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/timer/timer.hpp>
 
 #include <stk/stk.hpp>
+
+#include "utils.h"
+#include <sys/stat.h>
 
 #include "generator.h"
 
@@ -110,8 +114,26 @@ int main(int argc, char** argv)
         Interval::seed(static_cast<uint32_t>(time(NULL)));
         BigNum<NDIM>::seed(static_cast<uint32_t>(time(NULL)));
 
+        //###############Creating Folders###################################
+        boost::filesystem::path source_dir_path( boost::filesystem::current_path() );
 
-        for(int psCur=0; psCur<nPatches; psCur++)
+        std::cerr << source_dir_path.string() << std::endl;
+
+        std::stringstream ss;
+        std::string datafiles, images, graphs;
+        ss.str(std::string());
+        ss << source_dir_path.string() << "/results/";
+        std::string resultFolder = ss.str();
+        mkdir(resultFolder.c_str() ,0755);
+        ss.str(std::string());
+        ss << resultFolder << "pointset-poissodiskT2-n" << nPts << "/";
+
+        mkdir(ss.str().c_str(),0755);
+
+        create_folders(ss.str(), datafiles, images, graphs);
+        //##########################################################
+
+        for(int psCur=1; psCur<=nPatches; psCur++)
         {
             stk::PointSet2dd pts;
 
@@ -139,7 +161,23 @@ int main(int argc, char** argv)
 
             fprintf(stderr,"\r meanTime %f meanPts %f patch %d",meanTime, meanPts, psCur);
             //std::cout << meanTime << " sec, " << meanPts << " pts" << std::endl;
-            stream.write(pts);
+
+            ss.str(std::string());
+            ss << psCur;
+            std::string s1 = ss.str();
+            paddedzerosN(s1, nPatches);
+
+            ss.str(std::string());
+            ss << datafiles << "pointset-poissodiskT2-n" << nPts << "-" << s1 << ".txt";
+
+            std::ofstream file;
+            file.open(ss.str().c_str());
+
+            for(int i = 0; i < pts.size(); i++){
+                file << pts.at(i).pos()[0] << " " << pts.at(i).pos()[1] << std::endl;
+            }
+            file.close();
+            //stream.write(pts);
         }
 
         std::cerr << std::endl;
@@ -156,3 +194,4 @@ int main(int argc, char** argv)
 
     exit(EXIT_SUCCESS);
 }
+

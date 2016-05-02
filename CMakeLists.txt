@@ -37,7 +37,7 @@ set(INSTALL_DATA_DIR share CACHE PATH "Installation directory for data files")
 ########################################################################
 
 find_package(PNG REQUIRED)
-find_package(Boost 1.42.0 COMPONENTS thread program_options unit_test_framework timer REQUIRED)
+find_package(Boost 1.42.0 COMPONENTS thread system filesystem program_options unit_test_framework timer REQUIRED)
 find_package(FFTW REQUIRED)
 find_package(CGAL REQUIRED COMPONENTS Core)
 find_package(GMP REQUIRED)
@@ -227,14 +227,25 @@ stk_make_program(sampler-stratifiedT2 "")
 stk_make_program(sampler-sobolT2 "")
 stk_make_program(sampler-haltonT2 "")
 
-add_executable(stk-sampler-poissondiskT2 src/sampler-poissondisk/sampler-poissondiskT2.cpp)
+#add_executable(stk-sampler-poissondiskT2 src/sampler-poissondisk/sampler-poissondiskT2.cpp)
+#target_link_libraries(
+#  stk-sampler-poissondiskT2
+#  stk
+#  ${STK_DEPS_LIBRARIES}
+#  ${prog_libs}
+#  )
+#install(PROGRAMS stk-sampler-poissondiskT2 DESTINATION bin)
+
+add_executable(sampler-poissondisk-demo1 src/sampler-poissondisk/create-folders.cpp src/sampler-poissondisk/sampler-poissondisk-demo1.cxx)
 target_link_libraries(
-  stk-sampler-poissondiskT2
+  sampler-poissondisk-demo1
   stk
   ${STK_DEPS_LIBRARIES}
   ${prog_libs}
   )
-install(PROGRAMS stk-sampler-poissondiskT2 DESTINATION bin)
+install(PROGRAMS stk-sampler-poissondisk-demo1 DESTINATION bin)
+
+
 
 add_executable(stk-sampler-fpoT2 src/sampler-fpo/sampler-fpoT2.cpp src/sampler-fpo/DT.cpp)
 target_link_libraries(
@@ -259,7 +270,7 @@ install(PROGRAMS stk-sampler-poissondiskT2 DESTINATION bin)
 #~ target_link_libraries(
 #~ sampler/bnot
 #~ ${CGAL_LIBRARIES} -lgmp
-#~ -lCGAL -lCGAL_Core 
+#~ -lCGAL -lCGAL_Core
 #~ stk
 #~ -lm -lamd -lcamd -lcolamd -lccolamd -lcholmod -lspqr -ltbb -lmetis -lblas -llapack
 #~ )
